@@ -1,5 +1,6 @@
 #include "tcpclient.h"
 #include "ui_tcpclient.h"
+#include "protocol.h"
 #include <QHostAddress>
 #include <QDebug>
 #include <QMessageBox>
@@ -52,4 +53,19 @@ void TcpClient::loadConfig()
 void TcpClient::showConnect()
 {
     QMessageBox::information(this,"连接服务器","连接服务器成功");
+}
+
+void TcpClient::on_send_pb_clicked()
+{
+    QString strMsg=ui->lineEdit->text();
+    if(!strMsg.isEmpty()){
+        PDU *pdu=mkPDU(strMsg.size());
+        pdu->uiMsgType=123;
+        memcpy(pdu->caData,strMsg.toStdString().c_str(),strMsg.size());
+        m_tcpScoket.write((char*)pdu,pdu->uiPDULen);
+        free(pdu);
+        pdu=NULL;
+    }else {
+        QMessageBox::warning(this,"发送信息","发送的信息不能为空");
+    }
 }
