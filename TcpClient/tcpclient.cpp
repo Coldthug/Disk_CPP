@@ -59,9 +59,10 @@ void TcpClient::on_send_pb_clicked()
 {
     QString strMsg=ui->lineEdit->text();
     if(!strMsg.isEmpty()){
-        PDU *pdu=mkPDU(strMsg.size());
+        PDU *pdu=mkPDU(strMsg.size()+1);
         pdu->uiMsgType=123;
-        memcpy(pdu->caData,strMsg.toStdString().c_str(),strMsg.size());
+        memcpy(pdu->caMsg,strMsg.toStdString().c_str(),strMsg.size());
+        qDebug()<<(char*)(pdu->caMsg);
         m_tcpScoket.write((char*)pdu,pdu->uiPDULen);
         free(pdu);
         pdu=NULL;
